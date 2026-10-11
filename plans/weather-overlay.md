@@ -112,7 +112,7 @@ Tasks:
 - Resolve Calendar's primary IANA time zone reliably; provide an explicit setting if it cannot be determined. Do not silently assume the browser or selected city's time zone matches Calendar.
 - Preserve hourly forecast timestamps as absolute instants, then map them to Calendar dates and displayed hours. Fetch sufficient adjacent-city-day coverage when city and Calendar time zones differ. Handle repeated/skipped DST hours without shifting weather onto the wrong date.
 - Prototype a 4–8 px strip at each column's left edge. Encode temperature using a consistent Celsius-based color scale independent of display units; use an adjacent blue lane or distinct opacity treatment for precipitation probability. Final width, palette, and rain treatment remain design choices.
-- Keep strips behind events and use `pointer-events: none` so clicks, selection, dragging, and resizing pass through. Existing summaries/details remain the accessible way to inspect exact values. Include a legend explaining both encodings.
+- Keep strips above timed event blocks so they remain visible in packed calendars, and use `pointer-events: none` so clicks, selection, dragging, and resizing pass through. Existing summaries/details remain the accessible way to inspect exact values. Include a legend explaining both encodings.
 - Add a separate setting for hourly strips, leaving daily summaries available. Suppress strips where data or reliable time-axis mapping is unavailable; avoid adding a strip in the all-day row or month grid.
 - Reposition and clip strips to the visible time grid during scrolling, resizing, navigation, view changes, and Calendar rerenders. Avoid expensive full-page redraws.
 
@@ -127,10 +127,10 @@ Acceptance:
 
 Implementation findings:
 - User supplied a week/7-day grid with dated `[role="gridcell"][data-column-index][data-datekey]` columns and 24 `.aLC8Le > .sJ9Raf` hour markers in `.Tmdkcc`. Adapter uses their measured spacing and the time-row origin; no fixed pixels/hour, event positions, or time-label offsets are used.
-- Clipping intersects the grid bounds, browser viewport, and scrolling/clipping ancestors. Strip controls live in the existing body-level shadow root with low stacking order and no pointer handling; live event stacking still needs verification.
+- Clipping intersects the grid bounds, browser viewport, and scrolling/clipping ancestors. Strips live in the existing body-level shadow root at z-index 40, above timed events and below summary controls, with no pointer handling. User confirmed the former low stacking order hid strips under events; user confirmed visibility above events; revised edge coverage still needs live confirmation.
 - Calendar time zone is an explicit IANA setting, initially empty. The GMT labels cannot reliably identify an IANA zone. Strips start disabled and show a configuration hint when enabled without a valid zone.
 - Forecasts now request `timeformat=unixtime` and two past days for cross-zone boundary coverage. Cache schema changed to v2 so older ISO-only cache data cannot silently drive strips. Provider daily timestamps are decoded using its returned fixed offset; hourly timestamps are converted using IANA zones. Provider daily aggregates are not recomputed around DST.
-- Temperature bands cover the following hour; precipitation bands cover the preceding hour according to provider semantics. Palette stays independent of units. Blue probability starts faint at 0% and darkens to 100%; missing lane values leave gaps. Hourly bands are discrete; smooth interpolation is deferred.
+- Temperature bands cover the following hour; precipitation bands cover the preceding hour according to provider semantics. Palette stays independent of units. Blue probability uses an opaque theme-aware neutral color at 0% and blends toward blue at 100%; missing lane values leave gaps. Hourly bands are discrete; smooth interpolation is deferred.
 - Minute-level mapping splits midnight, fractional-offset zones, and DST transitions. Repeated wall-clock ranges divide lane widths between readings; nonexistent wall-clock hours remain empty. Mapping is cached by forecast/time zone rather than recomputed on scrolling.
 - Existing daily summaries and city-local details remain. Month view has no hourly strip. The popup and details include the legend.
 - Automated checks: 22 tests pass, including new UNIX normalization, interval semantics, fractional-offset/date-boundary mapping, spring/fall and half-hour DST cases, missing data, palette bounds, and time-grid scale validation. Live Chrome alignment, clipping, themes, and event interactions are pending.
@@ -180,6 +180,12 @@ These items are not committed to the current version. When an addition is agreed
 - 2026-10-11: Follow-up screenshot showed the date-spacing fix overlapped all-day events. Replaced per-cell padding with a dedicated summary row in Calendar’s normal flow and a measured header-row minimum height. Added bounds checks against date headings and the actual all-day row. Automated checks pass; live placement awaits confirmation.
 
 - 2026-10-11: User reported continuously drifting Calendar after the spacer/header-height change. Removed geometry-driven header resizing and spacer insertion. Added one-time fixed all-day-margin reservations in `src/summary-layout.js`, plus regression tests for 100 observer passes, restoration, and DOM replacement. All 25 tests and syntax checks pass. A full Calendar reload is required to clear previously accumulated inline heights; live spacing remains to verify.
+
+- 2026-10-11: User confirmed the fixed summary spacing looks good with multiple all-day events. Timed event blocks hid the original low-layer strips; raised strips to z-index 40 while retaining pointer pass-through and grid clipping. Live visibility over packed events and event interactions remain to verify.
+
+- 2026-10-11: User confirmed above-event strips but reported exposed event slivers at the left edge. Shifted strips two pixels left to start one pixel before the column boundary and widened the temperature lane from 4 to 6 px (8 px total). Made both lanes opaque, using theme-aware precipitation colors; cached strips use desaturation instead of transparency. Pointer pass-through and clipping remain. Live edge coverage awaits confirmation.
+
+- 2026-10-11: User confirmed that the two-pixel left shift is sufficient and requested the previous width. Restored the 4 px temperature plus 2 px precipitation lanes (6 px total), retaining the new position and opaque colors.
 
 ## Implementation Findings and Acceptance Handoff
 

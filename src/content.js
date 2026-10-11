@@ -11,7 +11,7 @@
     button:focus-visible { outline: 2px solid #669fdf; outline-offset: 2px; }
     .weather { position: fixed; z-index: 50; height: 22px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .month { font-size: 10px; padding: 2px; }
-    #strips { position: fixed; z-index: 1; pointer-events: none; overflow: hidden; }
+    #strips { position: fixed; z-index: 40; pointer-events: none; overflow: hidden; }
     .strip-segment { position: absolute; pointer-events: none; }
     .status { position: fixed; bottom: 14px; right: 76px; z-index: 50; max-width: 300px; font-size: 12px; }
     dialog { position: fixed; margin: auto; color: CanvasText; background: Canvas; border: 1px solid #8888; border-radius: 12px; padding: 18px; width: min(440px,90vw); max-height: 75vh; font: 13px system-ui; }
@@ -101,13 +101,17 @@
       stripSignature = '';
     }
     const visible = segments.filter(segment => grid.columns.some(column => column.date === segment.date));
-    const signature = JSON.stringify(grid.columns.map(column => column.date));
+    const dark = host.style.colorScheme === 'dark' || (!host.style.colorScheme && matchMedia('(prefers-color-scheme: dark)').matches);
+    const signature = JSON.stringify([grid.columns.map(column => column.date), dark, forecast.stale]);
     if (signature !== stripSignature) {
       stripNodes = visible.map(segment => {
         const element = node('div'); element.className = 'strip-segment';
-        const color = segment.lane === 'temperature' ? core.temperatureColor(segment.value) : `rgba(40,120,230,${.12 + .88 * segment.value / 100})`;
+        const rainBase = dark ? [38, 45, 55] : [226, 233, 242];
+        const rainBlue = [40, 120, 230];
+        const rainColor = `rgb(${rainBase.map((value, index) => Math.round(value + (rainBlue[index] - value) * segment.value / 100)).join(',')})`;
+        const color = segment.lane === 'temperature' ? core.temperatureColor(segment.value) : rainColor;
         element.style.backgroundColor = color;
-        element.style.opacity = forecast.stale ? '.4' : '.75';
+        element.style.filter = forecast.stale ? 'saturate(.5)' : '';
         return {segment, element};
       });
       strips.replaceChildren(...stripNodes.map(item => item.element));
@@ -120,7 +124,7 @@
       const column = grid.columns.find(column => column.date === segment.date);
       const laneWidth = segment.lane === 'temperature' ? 4 : 2;
       const laneOffset = segment.lane === 'temperature' ? 0 : 4;
-      element.style.left = `${column.rect.left + 1 + laneOffset + segment.slot * laneWidth / segment.slots - clip.left}px`;
+      element.style.left = `${column.rect.left - 1 + laneOffset + segment.slot * laneWidth / segment.slots - clip.left}px`;
       element.style.width = `${laneWidth / segment.slots}px`;
       element.style.top = `${grid.midnightY + segment.startMinute * grid.pixelsPerMinute - clip.top}px`;
       element.style.height = `${(segment.endMinute - segment.startMinute) * grid.pixelsPerMinute}px`;
