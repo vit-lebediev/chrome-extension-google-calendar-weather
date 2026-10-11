@@ -37,7 +37,7 @@ Weather data: Open-Meteo, CC BY 4.0. This is an independent extension, not affil
 - Language: English.
 - Suggested category: News & Weather (use the closest available dashboard category).
 - Single purpose: Display weather forecasts alongside dates and hourly schedules in Google Calendar.
-- Website/source URL: https://github.com/vit-lebediev/chrome-extension-google-calendar-weather (verify public access before submission). No license file exists yet; select a license before describing the project as openly licensed.
+- Website/source URL: https://github.com/vit-lebediev/chrome-extension-google-calendar-weather (verify public access before submission). Project code and original artwork are open source under 0BSD, without attribution requirements.
 - Support contact: `vit.lebediev@gmail.com`.
 - Privacy policy URL: https://github.com/vit-lebediev/chrome-extension-google-calendar-weather/blob/main/store/privacy-policy.md (after committing/pushing the file and verifying access while signed out).
 

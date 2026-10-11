@@ -152,14 +152,14 @@ Acceptance: both priority views pass the documented checks; failures degrade gra
 
 Packaging findings and handoff:
 - [x] Add independent code-drawn 16/32/48/128 px PNG icons and a 440×280 promotional tile. Include icons in the manifest; minimum Chrome version is 103.
-- [x] Add dependency-free asset and ZIP generators. `npm run package` runs tests/checks and creates `dist/calendar-weather-overlay-0.1.0.zip` and SHA-256 checksum. Archive whitelist includes only 13 runtime files; no Git, tests, store documents, plans, or development tools.
+- [x] Add dependency-free asset and ZIP generators. `npm run package` runs tests/checks and creates `dist/calendar-weather-overlay-0.1.0.zip` and SHA-256 checksum. Archive whitelist includes 13 runtime files plus LICENSE; no Git, tests, store documents, plans, or development tools.
 - [x] Verify 25 tests, syntax/manifest paths, PNG dimensions, and independent Python ZIP integrity/reference checks. Visually inspect icon and promotional artwork.
 - [x] Draft listing, permission/data declarations, reviewer instructions, privacy policy, and upload guide in `store/`. Location and locally handled Calendar date/layout data are described; no broad “no data handling” claim.
 - [ ] Capture at least one actual-use screenshot at 1280×800 or 640×400. Personal development screenshots were not reused.
 - [x] Confirm public support contact: `vit.lebediev@gmail.com`. Updated the policy, listing, and upload guide with the user-approved address.
 - [ ] Publish the completed policy by committing/pushing `store/privacy-policy.md` to the public GitHub repository and verifying its rendered `blob/main/store/privacy-policy.md` URL while signed out. Policy has been shortened with accurate no-developer-collection, local handling, weather-provider sharing, source transparency, retention/control, and contact statements. Public remote access could not be verified from this environment; no push performed.
 - [ ] Test the extracted final ZIP in Chrome, including remaining navigation/theme/interaction/offline acceptance checks. Existing user screenshots confirm appearance and summary-spacing fixes, not the whole acceptance matrix.
-- [ ] Publisher completes dashboard fields, chooses distribution, uploads ZIP/assets, and submits when ready. Public source URL/license remain publisher choices. Keep the current API integration noncommercial under Open-Meteo’s terms unless provider access is changed.
+- [ ] Publisher completes dashboard fields, chooses distribution, uploads ZIP/assets, and submits when ready. Public source access remains to verify; the user selected 0BSD for code and original artwork. Keep the current API integration noncommercial under Open-Meteo’s terms unless provider access is changed.
 
 ## Future Feature Backlog
 
@@ -201,6 +201,8 @@ These items are not committed to the current version. When an addition is agreed
 - 2026-10-11: User authorized packaging and store-upload preparation. Created verified runtime ZIP/checksum, icons/promotional tile, listing/privacy drafts, reviewer instructions, and upload guide. Final screenshot, contact/policy hosting, packaged live acceptance, and actual submission remain outstanding.
 
 - 2026-10-11: User requested GitHub-hosted, source-transparent privacy wording. Replaced the longer policy with a concise draft explaining no developer collection while disclosing local Calendar handling and direct Open-Meteo requests. Added actual repository/policy URLs to listing/upload instructions. No license exists yet; no license chosen, hosting enabled, or Git push performed.
+
+- 2026-10-11: User selected 0BSD with no attribution requirement. Added LICENSE without a copyright-name line, package SPDX identifier, and code/artwork licensing notes. Included LICENSE in the rebuilt upload ZIP; weather data attribution and API terms remain separate.
 
 ## Implementation Findings and Acceptance Handoff
 

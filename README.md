@@ -70,4 +70,8 @@ If no buttons appear, check that your selected city has a forecast for the visib
 
 ## Store packaging
 
-Run `npm run package` to run checks and generate `dist/calendar-weather-overlay-0.1.0.zip` plus its SHA-256 checksum. This archive includes only the manifest, runtime files, and icons. Store listing drafts, privacy policy, and the promotional tile are in `store/`; follow [the upload guide](store/upload-guide.md) for remaining screenshots, policy hosting, packaged smoke tests, and dashboard fields. `npm run assets` regenerates the code-drawn artwork. No upload or publication is performed by these commands.
+Run `npm run package` to run checks and generate `dist/calendar-weather-overlay-0.1.0.zip` plus its SHA-256 checksum. This archive includes only the manifest, runtime files, icons, and license. Store listing drafts, privacy policy, and the promotional tile are in `store/`; follow [the upload guide](store/upload-guide.md) for remaining screenshots, policy hosting, packaged smoke tests, and dashboard fields. `npm run assets` regenerates the code-drawn artwork. No upload or publication is performed by these commands.
+
+## License
+
+Project code and original artwork are licensed under [BSD Zero Clause (0BSD)](LICENSE). You may use, copy, modify, and distribute them, including commercially, without attribution or retaining a license notice. The software is provided without warranty. Open-Meteo weather data and service access remain subject to their separate attribution requirements and terms.

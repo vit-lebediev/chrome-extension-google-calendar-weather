@@ -9,7 +9,7 @@
 - Listing and dashboard text: `store/listing.md`.
 - Privacy policy draft: `store/privacy-policy.md`.
 
-The tile is promotional artwork, not a screenshot. The ZIP includes only the manifest, runtime source, and icons; store materials, tests, plans, Git metadata, and development scripts are excluded. The ZIP is deterministic for identical runtime inputs. It is an unsigned ZIP for store upload, not a locally packed CRX.
+The tile is promotional artwork, not a screenshot. The ZIP includes only the manifest, runtime source, icons, and license; store materials, tests, plans, Git metadata, and development scripts are excluded. The ZIP is deterministic for identical runtime inputs. It is an unsigned ZIP for store upload, not a locally packed CRX.
 
 ## Remaining materials
 
@@ -18,7 +18,7 @@ The tile is promotional artwork, not a screenshot. The ZIP includes only the man
 3. Commit and push `store/privacy-policy.md` to the public GitHub repository. Use this URL after verifying it loads while signed out:
    `https://github.com/vit-lebediev/chrome-extension-google-calendar-weather/blob/main/store/privacy-policy.md`.
    A rendered public Markdown page provides the policy without separate website hosting. GitHub Pages is an optional alternative if you want a dedicated page. The policy is required even for local-only handling of user information. This task has not pushed files or verified that the remote repository/policy is publicly accessible.
-4. Decide public versus unlisted distribution, publisher identity, and whether to provide a public source repository. A repository license has not been selected automatically.
+4. Decide public versus unlisted distribution and publisher identity, and verify public repository access. The user-selected 0BSD license covers project code and original artwork and is included in the ZIP; weather-provider terms remain separate.
 5. Keep the initial release noncommercial under the current free weather API terms. Before monetizing it, revisit the [Open-Meteo terms](https://open-meteo.com/en/terms) and provider integration; do not embed a paid secret in a distributed extension.
 
 Image requirements: [Chrome Web Store images](https://developer.chrome.com/docs/webstore/images). Privacy requirements: [User Data FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq).

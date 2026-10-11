@@ -3,7 +3,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const {zip} = require('./artifact-utils');
 const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
-const files = ['manifest.json', ...Object.values(manifest.icons),
+const files = ['manifest.json', 'LICENSE', ...Object.values(manifest.icons),
   'src/core.js','src/adapter.js','src/summary-layout.js','src/content.js',
   'src/background.js','src/popup.html','src/popup.js','src/popup.css'].sort();
 const entries = [...new Set(files)].map(name => ({name, data: fs.readFileSync(name)}));
