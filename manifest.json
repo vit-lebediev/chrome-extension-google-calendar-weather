@@ -2,10 +2,12 @@
   "manifest_version": 3,
   "name": "Calendar Weather Overlay",
   "version": "0.1.0",
+  "minimum_chrome_version": "103",
+  "icons": {"16": "assets/icon-16.png", "32": "assets/icon-32.png", "48": "assets/icon-48.png", "128": "assets/icon-128.png"},
   "description": "Local weather overlays for Google Calendar, with direct Open-Meteo forecasts.",
   "permissions": ["storage"],
   "host_permissions": ["https://api.open-meteo.com/*", "https://geocoding-api.open-meteo.com/*"],
   "background": {"service_worker": "src/background.js"},
-  "action": {"default_popup": "src/popup.html", "default_title": "Calendar Weather"},
+  "action": {"default_popup": "src/popup.html", "default_title": "Calendar Weather", "default_icon": {"16": "assets/icon-16.png", "32": "assets/icon-32.png"}},
   "content_scripts": [{"matches": ["https://calendar.google.com/*"], "js": ["src/core.js", "src/adapter.js", "src/summary-layout.js", "src/content.js"], "run_at": "document_idle"}]
 }

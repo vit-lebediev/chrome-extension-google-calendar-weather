@@ -67,3 +67,7 @@ Validate these before relying on the overlay:
 - Turn strips off/on independently; daily summaries should remain. Check the legend and colors in both themes. Change the Calendar zone setting when changing Calendar's actual primary time zone.
 
 If no buttons appear, check that your selected city has a forecast for the visible dates. If status says **unsupported layout**, capture only date-header HTML for adapter repair. For errors, inspect the extension's service worker from `chrome://extensions`. Avoid including personal events in diagnostic exports.
+
+## Store packaging
+
+Run `npm run package` to run checks and generate `dist/calendar-weather-overlay-0.1.0.zip` plus its SHA-256 checksum. This archive includes only the manifest, runtime files, and icons. Store listing drafts, privacy policy, and the promotional tile are in `store/`; follow [the upload guide](store/upload-guide.md) for remaining screenshots, policy hosting, packaged smoke tests, and dashboard fields. `npm run assets` regenerates the code-drawn artwork. No upload or publication is performed by these commands.

@@ -10,6 +10,8 @@ Keep application code in `src/` and future static assets in `assets/`. Exclude g
 
 Use Node 20+ and run `npm test` for automated checks and `npm run check` for syntax and manifest paths. No installation or build step is required. Load the repository unpacked through `chrome://extensions`; reload the extension and Calendar after changes. Use the README checklist for live browser verification.
 
+Run `npm run package` to check and create the runtime-only store ZIP in `dist/`. `npm run assets` regenerates icons and promotional artwork. Store drafts and upload instructions live in `store/`.
+
 ## Planning Workflow
 
 For future work that needs a plan, create or update a Markdown file in `plans/` before implementing. Use descriptive filenames such as `weather-overlay.md`. Include ordered stages, dependencies, deliverables, acceptance criteria, and status. Treat the file as the source of truth: update it as discussions change scope or decisions, and as implementation progresses. Summarize revisions in conversation. When the user requests planning and iteration first, wait for their instruction to begin coding.
@@ -26,7 +28,7 @@ Use Node's built-in test runner with `tests/*.test.js` and descriptive behavior 
 
 ## Commit & Pull Request Guidelines
 
-No Git history is available to establish existing conventions. Use concise, imperative commit subjects, such as `Add weather data adapter`. Keep changes focused.
+Use concise, imperative commit subjects, matching existing `Add`, `Fix`, and `Implement` subjects. Keep changes focused.
 
 Pull requests should explain the change, link relevant issues, and report validation performed. Include screenshots for visible interface changes and explicitly identify any checks that could not run.
 

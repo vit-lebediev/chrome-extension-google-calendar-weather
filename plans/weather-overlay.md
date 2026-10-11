@@ -137,7 +137,7 @@ Implementation findings:
 
 ## Stage 7 — Validate and Package the First Version
 
-Status: Deferred until agreed feature work is complete. Existing documentation and automated checks are available; final validation and packaging remain pending. Dependencies: Stages 4–6 and any additional features agreed for this version.
+Status: Package preparation completed at the user’s request. Store submission materials and remaining manual acceptance are tracked below; no upload or publication performed. Dependencies: Stages 4–6 and any additional features agreed for this version.
 
 Tasks:
 - Complete all agreed feature stages before final packaging; keep testing and documenting changes during development.
@@ -149,6 +149,17 @@ Tasks:
 Deliverables: documented, locally installable first version.
 
 Acceptance: both priority views pass the documented checks; failures degrade gracefully; source contains no credentials or remotely loaded executable code. Web Store publication is a separate task.
+
+Packaging findings and handoff:
+- [x] Add independent code-drawn 16/32/48/128 px PNG icons and a 440×280 promotional tile. Include icons in the manifest; minimum Chrome version is 103.
+- [x] Add dependency-free asset and ZIP generators. `npm run package` runs tests/checks and creates `dist/calendar-weather-overlay-0.1.0.zip` and SHA-256 checksum. Archive whitelist includes only 13 runtime files; no Git, tests, store documents, plans, or development tools.
+- [x] Verify 25 tests, syntax/manifest paths, PNG dimensions, and independent Python ZIP integrity/reference checks. Visually inspect icon and promotional artwork.
+- [x] Draft listing, permission/data declarations, reviewer instructions, privacy policy, and upload guide in `store/`. Location and locally handled Calendar date/layout data are described; no broad “no data handling” claim.
+- [ ] Capture at least one actual-use screenshot at 1280×800 or 640×400. Personal development screenshots were not reused.
+- [x] Confirm public support contact: `vit.lebediev@gmail.com`. Updated the policy, listing, and upload guide with the user-approved address.
+- [ ] Publish the completed policy by committing/pushing `store/privacy-policy.md` to the public GitHub repository and verifying its rendered `blob/main/store/privacy-policy.md` URL while signed out. Policy has been shortened with accurate no-developer-collection, local handling, weather-provider sharing, source transparency, retention/control, and contact statements. Public remote access could not be verified from this environment; no push performed.
+- [ ] Test the extracted final ZIP in Chrome, including remaining navigation/theme/interaction/offline acceptance checks. Existing user screenshots confirm appearance and summary-spacing fixes, not the whole acceptance matrix.
+- [ ] Publisher completes dashboard fields, chooses distribution, uploads ZIP/assets, and submits when ready. Public source URL/license remain publisher choices. Keep the current API integration noncommercial under Open-Meteo’s terms unless provider access is changed.
 
 ## Future Feature Backlog
 
@@ -186,6 +197,10 @@ These items are not committed to the current version. When an addition is agreed
 - 2026-10-11: User confirmed above-event strips but reported exposed event slivers at the left edge. Shifted strips two pixels left to start one pixel before the column boundary and widened the temperature lane from 4 to 6 px (8 px total). Made both lanes opaque, using theme-aware precipitation colors; cached strips use desaturation instead of transparency. Pointer pass-through and clipping remain. Live edge coverage awaits confirmation.
 
 - 2026-10-11: User confirmed that the two-pixel left shift is sufficient and requested the previous width. Restored the 4 px temperature plus 2 px precipitation lanes (6 px total), retaining the new position and opaque colors.
+
+- 2026-10-11: User authorized packaging and store-upload preparation. Created verified runtime ZIP/checksum, icons/promotional tile, listing/privacy drafts, reviewer instructions, and upload guide. Final screenshot, contact/policy hosting, packaged live acceptance, and actual submission remain outstanding.
+
+- 2026-10-11: User requested GitHub-hosted, source-transparent privacy wording. Replaced the longer policy with a concise draft explaining no developer collection while disclosing local Calendar handling and direct Open-Meteo requests. Added actual repository/policy URLs to listing/upload instructions. No license exists yet; no license chosen, hosting enabled, or Git push performed.
 
 ## Implementation Findings and Acceptance Handoff
 
