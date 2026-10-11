@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Calendar Weather</title><link rel="stylesheet" href="popup.css"></head>
+<body>
+  <h1>Calendar Weather</h1>
+  <label class="toggle"><input id="enabled" type="checkbox"> Show weather on Calendar</label>
+  <form id="search"><label for="city">Find a city</label><div class="search"><input id="city" required minlength="2" maxlength="100" placeholder="City name" autocomplete="off"><button id="search-button">Search</button></div></form>
+  <p id="status" role="status" aria-live="polite"></p>
+  <div id="results"></div>
+  <p id="location">No city selected.</p>
+  <label for="units">Temperature</label><select id="units"><option value="celsius">Celsius (°C)</option><option value="fahrenheit">Fahrenheit (°F)</option></select>
+  <p class="note">Forecasts use your selected city's local dates and time zone. Wind is shown in km/h.</p>
+  <p class="note">City searches and coordinates go directly to <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a>. Calendar events stay on this page.</p>
+  <script src="core.js"></script><script src="popup.js"></script>
+</body></html>

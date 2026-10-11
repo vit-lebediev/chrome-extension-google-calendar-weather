@@ -2,23 +2,25 @@
 
 ## Project Structure & Module Organization
 
-This directory is currently empty apart from this guide. No source code, assets, tests, package manifest, or Git metadata is present. The directory name suggests a Google Calendar weather extension; confirm its scope before choosing a framework or browser extension architecture.
+This Manifest V3 Chrome extension overlays weather on Google Calendar. `manifest.json` loads scripts from `src/`: `background.js` fetches weather, `adapter.js` identifies Calendar dates, `content.js` renders overlays, `core.js` shares pure functions, and `popup.*` manages settings. Node tests live in `tests/`, development checks in `scripts/`, and implementation plans in `plans/`. Installation instructions are in `README.md`.
 
-When scaffolding the project, keep application code in `src/`, automated tests in `tests/`, and static assets in `assets/`. Document the actual layout here once established. Keep generated output separate from source files and exclude it from version control.
+Keep application code in `src/` and future static assets in `assets/`. Exclude generated output from version control.
 
 ## Build, Test, and Development Commands
 
-No build, test, lint, or local development commands are configured yet. Do not assume commands such as `npm test` or `npm run build` work.
+Use Node 20+ and run `npm test` for automated checks and `npm run check` for syntax and manifest paths. No installation or build step is required. Load the repository unpacked through `chrome://extensions`; reload the extension and Calendar after changes. Use the README checklist for live browser verification.
 
-After selecting tooling, define reproducible commands in the project manifest and document installation, local execution, testing, and production builds in `README.md`. If this becomes a browser extension, include instructions for loading the unpacked extension.
+## Planning Workflow
+
+For future work that needs a plan, create or update a Markdown file in `plans/` before implementing. Use descriptive filenames such as `weather-overlay.md`. Include ordered stages, dependencies, deliverables, acceptance criteria, and status. Treat the file as the source of truth: update it as discussions change scope or decisions, and as implementation progresses. Summarize revisions in conversation. When the user requests planning and iteration first, wait for their instruction to begin coding.
 
 ## Coding Style & Naming Conventions
 
-No language, formatter, or linter has been selected. Establish shared formatting and linting configuration with the initial implementation. Until then, use two-space indentation for JSON and YAML, descriptive filenames, and consistent naming within each language. Avoid unrelated formatting changes.
+Use plain JavaScript, HTML, and CSS with two-space indentation, semicolons, camelCase functions, and descriptive filenames. No formatter or linter is configured. Keep Calendar DOM assumptions in `adapter.js`; avoid unrelated formatting changes.
 
 ## Testing Guidelines
 
-No testing framework or coverage threshold exists. Add tests alongside new behavior, prioritizing weather data handling, date boundaries, and calendar integration if those features are implemented. Use descriptive test names and document the test command before requiring it in reviews.
+Use Node's built-in test runner with `tests/*.test.js` and descriptive behavior names. No coverage threshold is set. Prioritize date boundaries, missing data, cache isolation, and message validation. Keep fixture event contents anonymized. Report browser checks separately from automated tests.
 
 ## Commit & Pull Request Guidelines
 
