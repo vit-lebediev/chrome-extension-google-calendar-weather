@@ -25,7 +25,7 @@
   const strips = shadow.querySelector('#strips');
   const status = shadow.querySelector('.status');
   const dialog = shadow.querySelector('dialog');
-  const padded = new Map();
+  const summaryRows = WeatherSummaryLayout.createReservations();
   let settings = core.defaults;
   let forecast = null;
   let error = '';
@@ -87,11 +87,6 @@
     }
   });
 
-  function restoreHeaders(active = new Set()) {
-    for (const [header, previous] of padded) {
-      if (!active.has(header)) { header.style.paddingBottom = previous; padded.delete(header); }
-    }
-  }
   function layoutStrips(targets) {
     strips.hidden = true;
     if (!settings.enabled || !settings.hourlyStrips || !forecast || !targets.some(target => target.mode === 'week')) {
@@ -148,13 +143,11 @@
       themeNode = themeNode.parentElement;
     }
     if (host.style.colorScheme !== scheme) host.style.colorScheme = scheme;
-    const active = new Set(targets.filter(t => t.mode === 'week').map(t => t.anchor));
-    restoreHeaders(active);
-    for (const header of active) {
-      if (!padded.has(header)) {
-        padded.set(header, header.style.paddingBottom);
-        header.style.paddingBottom = `${parseFloat(getComputedStyle(header).paddingBottom || '0') + 24}px`;
-      }
+    const weekTargets = targets.filter(target => target.mode === 'week' && target.headerRow && target.allDayRow);
+    const active = new Set(weekTargets.map(target => target.allDayRow));
+    summaryRows.restoreExcept(active);
+    for (const row of active) {
+      summaryRows.reserve(row, getComputedStyle(row).marginTop);
     }
     const same = entries.length === targets.length && targets.every((target, i) => entries[i].date === target.date && entries[i].anchor === target.anchor);
     if (!same) {
@@ -171,9 +164,14 @@
       const rect = entry.anchor.getBoundingClientRect();
       const width = entry.mode === 'month' ? Math.max(0, rect.width / 2 - 22) : Math.max(0, rect.width - 12);
       const outside = rect.bottom <= 72 || rect.top >= innerHeight || rect.right <= 0 || rect.left >= innerWidth;
-      entry.button.hidden = !day || outside || width < 48;
+      const current = targets.find(target => target.anchor === entry.anchor);
+      const dateBottom = current?.dateAnchor?.getBoundingClientRect().bottom;
+      const allDayTop = current?.allDayRow?.getBoundingClientRect().top;
+      const top = entry.mode === 'month' ? rect.top + 2 : allDayTop - 28;
+      const safe = entry.mode === 'month' || (Number.isFinite(top) && top >= dateBottom + 4 && top + 22 <= allDayTop - 2);
+      entry.button.hidden = !day || outside || width < 48 || !safe;
       entry.button.style.left = `${rect.left + 4}px`;
-      entry.button.style.top = `${entry.mode === 'month' ? rect.top + 2 : rect.bottom - 24}px`;
+      entry.button.style.top = `${top}px`;
       entry.button.style.width = `${width}px`;
       if (day) {
         const text = `${core.condition(day.code)[0]} ${core.temperature(day.high, settings.units)}/${core.temperature(day.low, settings.units)}${settings.units === 'fahrenheit' ? 'F' : 'C'} · ${percent(day.rain)}${forecast.stale ? ' ⏱' : ''}`;

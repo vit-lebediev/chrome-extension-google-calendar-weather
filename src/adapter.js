@@ -6,7 +6,10 @@
     const week = headers.flatMap(header => {
       const button = header.querySelector('button[data-datekey]');
       const date = button && WeatherCore.decodeDateKey(button.dataset.datekey);
-      return date && WeatherCore.matchesDateLabel(date, button.getAttribute('aria-label')) ? [{date, anchor: header, mode: 'week'}] : [];
+      const headerRow = header.closest('[role="row"]');
+      const allDayRow = headerRow?.parentElement.querySelector('[jsname="sZR1Lb"][role="row"]');
+      return date && WeatherCore.matchesDateLabel(date, button.getAttribute('aria-label')) ?
+        [{date, anchor: header, dateAnchor: button.closest('h2') || button, headerRow, allDayRow, mode: 'week'}] : [];
     });
     if (week.length) return week;
     // Month dates and events are separate layers. Target only the date heading layer.

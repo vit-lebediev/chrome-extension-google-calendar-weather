@@ -123,7 +123,7 @@ Acceptance:
 - Different city/Calendar zones, date boundaries, and spring/fall DST transitions do not misalign segments. Unknown mapping and missing data omit segments rather than inventing values.
 - Color scale is consistent between days and Celsius/Fahrenheit preferences; temperature and precipitation remain distinguishable in light/dark themes.
 - Event creation, dragging, resizing, and editing work through the strip. Turning strips off removes them without affecting daily summaries; repeated navigation creates no duplicates.
-- User reviews the appearance alongside the existing version before any redesign/removal of daily summaries.
+- User reviews the appearance alongside the existing version before any redesign/removal of daily summaries. User has reported that the strips look great; scrolling and interaction acceptance remain open.
 
 Implementation findings:
 - User supplied a week/7-day grid with dated `[role="gridcell"][data-column-index][data-datekey]` columns and 24 `.aLC8Le > .sJ9Raf` hour markers in `.Tmdkcc`. Adapter uses their measured spacing and the time-row origin; no fixed pixels/hour, event positions, or time-label offsets are used.
@@ -175,11 +175,17 @@ These items are not committed to the current version. When an addition is agreed
 
 - 2026-10-11: Implemented Stage 6 from the supplied week/7-day time-grid HTML. Added strip/time-zone settings, fixed temperature and precipitation lanes, UNIX forecasts/cache v2, clipping, and time-mapping tests. Implementation is complete; live acceptance remains open, and packaging remains deferred.
 
+- 2026-10-11: User visually confirmed vertical strips and reported the daily summary overlapping today’s date circle. Fixed week/rolling-view placement to measure full date headings, align summaries 8 pixels below the tallest heading, and reserve header padding/minimum height. Restores both style properties on disable/view changes. Syntax checks and 22 tests pass; revised spacing awaits live confirmation.
+
+- 2026-10-11: Follow-up screenshot showed the date-spacing fix overlapped all-day events. Replaced per-cell padding with a dedicated summary row in Calendar’s normal flow and a measured header-row minimum height. Added bounds checks against date headings and the actual all-day row. Automated checks pass; live placement awaits confirmation.
+
+- 2026-10-11: User reported continuously drifting Calendar after the spacer/header-height change. Removed geometry-driven header resizing and spacer insertion. Added one-time fixed all-day-margin reservations in `src/summary-layout.js`, plus regression tests for 100 observer passes, restoration, and DOM replacement. All 25 tests and syntax checks pass. A full Calendar reload is required to clear previously accumulated inline heights; live spacing remains to verify.
+
 ## Implementation Findings and Acceptance Handoff
 
 - User authorized implementation on 2026-10-11. No application server, runtime dependencies, bundling, automatic location detection, or gradient feature was added.
 - Files: root manifest and package scripts; `src/core.js`, `src/background.js`, `src/adapter.js`, `src/content.js`, and settings popup. README describes installation, privacy, limitations, and manual checks.
-- Week headers reserve 24 pixels of padding for summaries. Month controls occupy the left portion of date-heading space, in an accessible body-level shadow root outside Calendar’s `aria-hidden` layers. Positioning follows scrolling/resizing and debounced DOM changes. These layout choices still require visual verification.
+- Week summaries reserve a fixed 34 px margin above the actual all-day row, captured once from its unmodified computed margin. Header height is never modified and no spacer is inserted. Buttons anchor 28 px above the measured all-day boundary, with overlap checks against date headings. Reservations restore original inline values/priorities on disable or view changes. Month controls occupy the left portion of date-heading space, in an accessible body-level shadow root outside Calendar’s `aria-hidden` layers. Positioning follows scrolling/resizing and debounced DOM changes. These layout choices still require visual verification.
 - Adapter checks decoded dates against English accessible labels and omits inconsistent dates. English is the initial supported Calendar language. Month layout classes are isolated in the adapter; a missing main region or changed structure produces an unsupported-layout status.
 - Forecast requests use 16 days, metric canonical values, a one-hour cache, per-location in-flight deduplication, 12-second timeouts, and a one-minute failure cooldown within the service-worker lifetime. A single persistent cache holds the latest forecast; stale fallback is restricted to an identical location/time-zone key. No background polling or automatic retry loop was added.
 - Tests verify provided boundary keys, civil-date validation, leap days/year rollover, label agreement, null values, repeated local-hour preservation, unit conversion, location validation, cache expiry, concurrent requests, stale fallback, location isolation, city result records, and message restrictions. Repeated-hour tests verify data preservation, not the provider’s actual DST response shape.

@@ -7,5 +7,5 @@
   "host_permissions": ["https://api.open-meteo.com/*", "https://geocoding-api.open-meteo.com/*"],
   "background": {"service_worker": "src/background.js"},
   "action": {"default_popup": "src/popup.html", "default_title": "Calendar Weather"},
-  "content_scripts": [{"matches": ["https://calendar.google.com/*"], "js": ["src/core.js", "src/adapter.js", "src/content.js"], "run_at": "document_idle"}]
+  "content_scripts": [{"matches": ["https://calendar.google.com/*"], "js": ["src/core.js", "src/adapter.js", "src/summary-layout.js", "src/content.js"], "run_at": "document_idle"}]
 }
