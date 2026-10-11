@@ -14,6 +14,8 @@ Use Node 20+ and run `npm test` for automated checks and `npm run check` for syn
 
 For future work that needs a plan, create or update a Markdown file in `plans/` before implementing. Use descriptive filenames such as `weather-overlay.md`. Include ordered stages, dependencies, deliverables, acceptance criteria, and status. Treat the file as the source of truth: update it as discussions change scope or decisions, and as implementation progresses. Summarize revisions in conversation. When the user requests planning and iteration first, wait for their instruction to begin coding.
 
+Insert newly agreed features before final validation and packaging; keep packaging as the final stage and update numbering and dependencies. Continue incremental testing during feature development.
+
 ## Coding Style & Naming Conventions
 
 Use plain JavaScript, HTML, and CSS with two-space indentation, semicolons, camelCase functions, and descriptive filenames. No formatter or linter is configured. Keep Calendar DOM assumptions in `adapter.js`; avoid unrelated formatting changes.

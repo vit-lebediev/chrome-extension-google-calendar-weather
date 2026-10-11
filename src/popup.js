@@ -14,9 +14,25 @@ async function init() {
   settings = {...WeatherCore.defaults, ...stored.settings};
   el('enabled').checked = settings.enabled;
   el('units').value = settings.units;
+  el('strips').checked = settings.hourlyStrips;
+  el('calendar-timezone').value = settings.calendarTimezone;
+  for (const zone of Intl.supportedValuesOf('timeZone')) {
+    const option = document.createElement('option'); option.value = zone; el('timezones').append(option);
+  }
   showLocation();
   el('enabled').addEventListener('change', () => { settings.enabled = el('enabled').checked; save().catch(report); });
   el('units').addEventListener('change', () => { settings.units = el('units').value; save().catch(report); });
+  el('strips').addEventListener('change', () => { settings.hourlyStrips = el('strips').checked; save().catch(report); });
+  el('calendar-timezone').addEventListener('change', () => {
+    const value = el('calendar-timezone').value.trim();
+    if (value && !WeatherCore.validTimezone(value)) {
+      el('status').textContent = 'Enter a valid time zone, such as America/Los_Angeles.';
+      el('calendar-timezone').setAttribute('aria-invalid', 'true'); return;
+    }
+    el('calendar-timezone').removeAttribute('aria-invalid');
+    settings.calendarTimezone = value;
+    save().then(() => { el('status').textContent = 'Calendar time zone saved.'; }).catch(report);
+  });
   el('search').addEventListener('submit', async event => {
     event.preventDefault();
     el('search-button').disabled = true;

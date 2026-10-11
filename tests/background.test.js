@@ -28,7 +28,7 @@ test('concurrent forecast requests are deduplicated and a warm cache needs no ne
   let count = 0;
   let release;
   const gate = new Promise(resolve => { release = resolve; });
-  const w = worker(async url => { count++; assert.equal(url.hostname, 'api.open-meteo.com'); assert.equal(url.searchParams.get('timezone'), location.timezone); await gate; return success(); });
+  const w = worker(async url => { count++; assert.equal(url.hostname, 'api.open-meteo.com'); assert.equal(url.searchParams.get('timezone'), location.timezone); assert.equal(url.searchParams.get('timeformat'), 'unixtime'); assert.equal(url.searchParams.get('past_days'), '2'); await gate; return success(); });
   const requests = [w.request(), w.request(), w.request()];
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(count, 1);

@@ -11,15 +11,18 @@
     button:focus-visible { outline: 2px solid #669fdf; outline-offset: 2px; }
     .weather { position: fixed; z-index: 50; height: 22px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .month { font-size: 10px; padding: 2px; }
+    #strips { position: fixed; z-index: 1; pointer-events: none; overflow: hidden; }
+    .strip-segment { position: absolute; pointer-events: none; }
     .status { position: fixed; bottom: 14px; right: 76px; z-index: 50; max-width: 300px; font-size: 12px; }
     dialog { position: fixed; margin: auto; color: CanvasText; background: Canvas; border: 1px solid #8888; border-radius: 12px; padding: 18px; width: min(440px,90vw); max-height: 75vh; font: 13px system-ui; }
     dialog::backdrop { background: #0005; }
     h2 { font-size: 18px; margin: 0 0 8px; } p { line-height: 1.5; }
     table { width: 100%; border-collapse: collapse; } th,td { text-align: left; padding: 6px; border-bottom: 1px solid #8884; }
     .scroll { max-height: 40vh; overflow: auto; } .close { float: right; } a { color: #659ee8; }
-  </style><div id="widgets"></div><button class="status" hidden></button><dialog aria-label="Weather forecast"></dialog>`;
+  </style><div id="strips" aria-hidden="true"></div><div id="widgets"></div><button class="status" hidden></button><dialog aria-label="Weather forecast"></dialog>`;
   document.body.append(host);
   const widgets = shadow.querySelector('#widgets');
+  const strips = shadow.querySelector('#strips');
   const status = shadow.querySelector('.status');
   const dialog = shadow.querySelector('dialog');
   const padded = new Map();
@@ -30,6 +33,11 @@
   let generation = 0;
   let entries = [];
   let scheduled = false;
+  let segmentSource = null;
+  let segmentTimezone = '';
+  let segments = [];
+  let stripSignature = '';
+  let stripNodes = [];
 
   function node(tag, text) {
     const element = document.createElement(tag);
@@ -66,7 +74,8 @@
     const scroll = node('div'); scroll.className = 'scroll'; scroll.append(table);
     const attribution = node('a', 'Weather data: Open-Meteo (CC BY 4.0)');
     attribution.href = 'https://open-meteo.com/'; attribution.target = '_blank'; attribution.rel = 'noreferrer';
-    dialog.append(scroll, node('p', 'Precipitation is the maximum hourly probability for this day.'), attribution);
+    dialog.append(scroll, node('p', 'Precipitation is the maximum hourly probability for this day.'),
+      node('p', 'Strip legend: temperature purple → blue → teal → yellow → orange → red (−10°C to 40°C / 14°F to 104°F). Adjacent blue lane: darker means higher precipitation probability. Repeated DST hours split each lane; gaps mean missing data.'), attribution);
     if (!dialog.open) dialog.showModal();
   }
   dialog.addEventListener('click', event => { if (event.target === dialog && (event.clientX < dialog.getBoundingClientRect().left || event.clientX > dialog.getBoundingClientRect().right || event.clientY < dialog.getBoundingClientRect().top || event.clientY > dialog.getBoundingClientRect().bottom)) dialog.close(); });
@@ -82,6 +91,47 @@
     for (const [header, previous] of padded) {
       if (!active.has(header)) { header.style.paddingBottom = previous; padded.delete(header); }
     }
+  }
+  function layoutStrips(targets) {
+    strips.hidden = true;
+    if (!settings.enabled || !settings.hourlyStrips || !forecast || !targets.some(target => target.mode === 'week')) {
+      strips.replaceChildren(); stripNodes = []; stripSignature = ''; return '';
+    }
+    if (!core.validTimezone(settings.calendarTimezone)) return 'Set Calendar time zone for strips';
+    const grid = CalendarAdapter.discoverTimeGrid();
+    if (!grid) return 'Hourly grid not recognized';
+    if (segmentSource !== forecast.data || segmentTimezone !== settings.calendarTimezone) {
+      segments = core.stripSegments(forecast.data.hours, settings.calendarTimezone);
+      segmentSource = forecast.data; segmentTimezone = settings.calendarTimezone;
+      stripSignature = '';
+    }
+    const visible = segments.filter(segment => grid.columns.some(column => column.date === segment.date));
+    const signature = JSON.stringify(grid.columns.map(column => column.date));
+    if (signature !== stripSignature) {
+      stripNodes = visible.map(segment => {
+        const element = node('div'); element.className = 'strip-segment';
+        const color = segment.lane === 'temperature' ? core.temperatureColor(segment.value) : `rgba(40,120,230,${.12 + .88 * segment.value / 100})`;
+        element.style.backgroundColor = color;
+        element.style.opacity = forecast.stale ? '.4' : '.75';
+        return {segment, element};
+      });
+      strips.replaceChildren(...stripNodes.map(item => item.element));
+      stripSignature = signature;
+    }
+    const {clip} = grid;
+    strips.style.left = `${clip.left}px`; strips.style.top = `${clip.top}px`;
+    strips.style.width = `${clip.right - clip.left}px`; strips.style.height = `${clip.bottom - clip.top}px`;
+    for (const {segment, element} of stripNodes) {
+      const column = grid.columns.find(column => column.date === segment.date);
+      const laneWidth = segment.lane === 'temperature' ? 4 : 2;
+      const laneOffset = segment.lane === 'temperature' ? 0 : 4;
+      element.style.left = `${column.rect.left + 1 + laneOffset + segment.slot * laneWidth / segment.slots - clip.left}px`;
+      element.style.width = `${laneWidth / segment.slots}px`;
+      element.style.top = `${grid.midnightY + segment.startMinute * grid.pixelsPerMinute - clip.top}px`;
+      element.style.height = `${(segment.endMinute - segment.startMinute) * grid.pixelsPerMinute}px`;
+    }
+    strips.hidden = !stripNodes.length;
+    return '';
   }
   function layout() {
     scheduled = false;
@@ -133,8 +183,10 @@
       }
     }
     status.hidden = !settings.enabled;
+    const stripNotice = layoutStrips(targets);
     status.textContent = !settings.location ? 'Weather: choose a city' : loading ? 'Weather: loading…' : error ? 'Weather unavailable · retry' : !targets.length ? 'Weather: unsupported layout' : forecast?.stale ? 'Weather: cached forecast · retry' : `Weather: ${settings.location.label}`;
-    status.title = error || 'Weather uses the selected city’s local dates. Open extension settings to change your city.';
+    if (stripNotice) status.textContent += ` · ${stripNotice}`;
+    status.title = error || `Weather uses the selected city’s local dates. ${stripNotice || 'Open extension settings to change your city.'}`;
   }
   function schedule() { if (!scheduled) { scheduled = true; requestAnimationFrame(layout); } }
   async function load() {
@@ -160,7 +212,7 @@
     } catch (failure) { if (current === generation) error = failure.message; }
     finally { if (current === generation) { loading = false; schedule(); } }
   }
-  new MutationObserver(schedule).observe(document.body, {subtree: true, childList: true, attributes: true, attributeFilter: ['data-datekey', 'aria-label', 'class', 'style']});
+  new MutationObserver(schedule).observe(document.body, {subtree: true, childList: true, attributes: true, attributeFilter: ['data-datekey', 'data-start-date-key', 'data-end-date-key', 'aria-label', 'class', 'style']});
   addEventListener('resize', schedule);
   document.addEventListener('scroll', schedule, true);
   chrome.storage.onChanged.addListener((changes, area) => { if (area === 'local' && changes.settings) load().catch(() => {}); });

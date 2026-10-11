@@ -38,7 +38,7 @@ async function forecast(location) {
     try {
       const url = new URL('https://api.open-meteo.com/v1/forecast');
       url.search = new URLSearchParams({latitude: String(location.latitude), longitude: String(location.longitude),
-        timezone: location.timezone, forecast_days: '16',
+        timezone: location.timezone, forecast_days: '16', past_days: '2', timeformat: 'unixtime',
         daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max',
         hourly: 'temperature_2m,precipitation_probability,wind_speed_10m', wind_speed_unit: 'kmh'});
       const data = core.normalizeForecast(await getJSON(url));

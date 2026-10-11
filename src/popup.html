@@ -9,6 +9,12 @@
   <div id="results"></div>
   <p id="location">No city selected.</p>
   <label for="units">Temperature</label><select id="units"><option value="celsius">Celsius (°C)</option><option value="fahrenheit">Fahrenheit (°F)</option></select>
+  <label class="toggle"><input id="strips" type="checkbox"> Show hourly weather strips</label>
+  <label for="calendar-timezone">Calendar primary time zone</label>
+  <input id="calendar-timezone" placeholder="America/Los_Angeles" autocomplete="off" list="timezones">
+  <datalist id="timezones"></datalist>
+  <p class="note">Set this to Google Calendar → Settings → Primary time zone. Strips use this zone; summaries and details use the selected city’s zone.</p>
+  <p class="note">Strip legend: temperature runs from purple (−10°C / 14°F) through blue, teal, yellow and orange to red (40°C / 104°F). The adjacent blue lane darkens as precipitation probability increases. Gaps mean missing data.</p>
   <p class="note">Forecasts use your selected city's local dates and time zone. Wind is shown in km/h.</p>
   <p class="note">City searches and coordinates go directly to <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a>. Calendar events stay on this page.</p>
   <script src="core.js"></script><script src="popup.js"></script>
